@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('../partials/_navbar.ejs') %>
+    <% if(message) { %>
+        <p><strong><%= message %></strong></p>
+    <% } %>
+    <form action="/hunts" method="POST">
+        <label for="monsterName">Monster Name:</label>
+        <input type="text" id="monsterName" name="monsterName" required>
+        
+        <label for="weaponType">Weapon Type:</label>
+        <input type="text" id="weaponType" name="weaponType" required>
+
+        <label for="rank">Rank:</label>
+        <input type="number" id="rank" name="rank" min="1" value="0"required>
+
+        <label for="outcome">Outcome:</label>
+        <input type="number" id="outcome" name="outcome" min="0" value="0" required>
+
+        <label for="minutes">Minutes:</label>
+        <input type="number" id="minutes" name="minutes" min="0" value="0" required>
+
+        <label for="notes">Notes:</label>
+        <input type="text" id="notes" name="notes">
+
+        <button type="submit">Create Hunt</button>
+    </form>
+</body>
+</html>

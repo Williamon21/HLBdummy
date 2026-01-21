@@ -1,0 +1,93 @@
+// controllers/hunts.js
+const express = require('express');
+const router = express.Router({ mergeParams: true });
+
+const Hunt = require('../models/hunt');
+
+//I.N.D.U.C.E.S 
+// Index GET /hunts
+router.get("/", async (req, res) => {
+    const hunts = await Hunt.find().populate('owner');
+    console.log(hunts)
+    res.render('hunts/index.ejs', { hunts });
+});
+
+// NEW GET /hunts/new
+
+router.get("/new", (req, res) => {
+    res.render("hunts/new.ejs");
+})
+
+//Delete DELETE /hunts/:huntid
+router.delete("/:huntid", async (req, res) => {
+    try {
+        //await Hunt.findByIdAndDelete(req.params.huntid)
+        const foundHunt =  await Hunt.findById(req.params.huntid)
+        if(!foundHunt.owner._id.equals(req.session.user._id)){
+         throw new Error("You do not have permission to delete this hunt")
+        }
+    } catch (error) {
+        console.log(error)
+        req.session.message = error.message
+        req.session.save(()=>{
+            res.redirect(`/hunts/${req.params.huntid}`)
+        })
+    }
+})
+
+
+// CREATE POST /hunts
+router.post("/", async (req, res) => {
+    try {
+        const { monsterName, weaponType, rank, outcome, minutes, notes } = req.body
+        if(!monsterName.trim()) throw new Error('Monster Name is required')
+        if(!weaponType.trim()) throw new Error('Weapon Type is required')
+        if(rank < 0 || rank === '') throw new Error('Rank must be a positive number')
+        if(outcome < 0 || outcome === '') throw new Error('Outcome must be a positive number')
+        if(minutes < 0 || minutes === '') throw new Error('Minutes must be a positive number')
+
+            req.body.owner = req.session.user._id
+
+    await Hunt.create(req.body);
+    res.redirect("/hunts");
+
+
+    } catch (error) {
+        console.log(error)
+        req.session.message = error.message
+        req.session.save(()=>{
+            res.redirect('/hunts/new')
+        })
+        
+    }
+
+});
+
+
+//seed route
+router.get("/seed", async (req, res) => {
+    await Hunt.deleteMany({});
+   // await Hunt.create([
+       
+    res.redirect('/hunts');
+});
+
+//Show GET /hunts/:huntid
+router.get("/:huntid", async (req, res) => {
+    try{
+        const foundHunt = await Hunt.findById(req.params.huntid).populate('owner');
+        console.log(req.params);
+        if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
+        res.render("hunts/show.ejs", { hunt: foundHunt });
+    } catch (error) {
+        console.log(error);
+        req.session.message = error.message;
+        req.session.save(()=> {
+            res.redirect("/hunts");
+
+    });
+    }
+});
+
+module.exports = router;
+

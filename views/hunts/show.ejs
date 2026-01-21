@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= hunt.owner.username %>'s hunt</title>
+</head>
+<body>
+    <%- include('../partials/_navbar.ejs') %>
+    <h1>Hunt Details for <%= hunt.monsterName %></h1>
+
+    <h2>Hunt Information</h2>
+        <p>Monster Name: <%= hunt.monsterName %></p>
+        <p>Weapon Type: <%= hunt.weaponType %></p>
+        <p>Rank: <%= hunt.rank %></p>
+        <p>Outcome: <%= hunt.outcome %></p>
+        <p>Minutes: <%= hunt.minutes %></p>
+        <p>Notes: <%= hunt.notes %></p>
+        <p>Hunted by: <%= hunt.owner.username %></p>
+
+        <h2>Hunter</h2>
+        <% if(hunt.owner._id.equals(user._id)) { %>
+            <p><%= hunt.owner.username %></p>
+        <% } else { %>
+            <p>This is <%= hunt.owner.username %>'s hunt against <%= hunt.monsterName %></p>
+        <% } %>
+    </ul>
+    
+</body>
+</html>

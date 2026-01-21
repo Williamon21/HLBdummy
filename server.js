@@ -1,49 +1,51 @@
-const dotenv = require('dotenv');
-dotenv.config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const app = express();
-const mongoose = require('mongoose');
-const methodOverride = require('method-override');
-const morgan = require('morgan');
-const session = require('express-session');
+const PORT = process.env.PORT || 3000;
+const morgan = require("morgan");
+const methodOverride = require("method-override");
+const authRoutes = require("./controllers/auth");
+const huntsController = require("./controllers/hunts")
+//const userController = require('./controllers/user')
+const session = require("express-session");
+const MongoStore = require('connect-mongo')
+const isSignedIn = require('./middleware/is-signed-in')
+const passDataToView = require('./middleware/pass-data-to-view')
 
-const authController = require('./controllers/auth.js');
-
-const port = process.env.PORT ? process.env.PORT : '3000';
-
-mongoose.connect(process.env.MONGODB_URI);
-
-mongoose.connection.on('connected', () => {
-  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
-});
-
-app.use(express.urlencoded({ extended: false }));
-app.use(methodOverride('_method'));
-// app.use(morgan('dev'));
+// Middlewares
+require("./db/connection");
+app.use(express.static('public'))
+app.use(morgan("tiny"));
+app.use(methodOverride("_method"));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI
+    }),
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24
+    }
+
   })
 );
+app.use(passDataToView)
 
-app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
+// Routes
+app.get("/", (req, res) => {
+  res.render("index.ejs");
 });
+app.use("/auth", authRoutes);
 
-app.get('/vip-lounge', (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send('Sorry, no guests allowed.');
-  }
-});
+// Routes below this you must be signed in
+app.use(isSignedIn);
 
-app.use('/auth', authController);
+app.use('/hunts', huntsController);
+//app.use('/users', userController);
 
-app.listen(port, () => {
-  console.log(`The express app is ready on port ${port}!`);
+app.listen(PORT, () => {
+  console.log("This ship sailing on port", PORT);
 });
