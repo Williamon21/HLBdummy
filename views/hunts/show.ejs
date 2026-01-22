@@ -21,10 +21,22 @@
         <h2>Hunter</h2>
         <% if(hunt.owner._id.equals(user._id)) { %>
             <p><%= hunt.owner.username %></p>
+            <a href="/hunts/<%= hunt._id %>/edit">Edit Hunt</a>
+            <form action="/hunts/<%= hunt._id %>?_method=DELETE" method="POST">
+            <button type="submit">Delete Hunt</button>
+            </form>
         <% } else { %>
             <p>This is <%= hunt.owner.username %>'s hunt against <%= hunt.monsterName %></p>
         <% } %>
-    </ul>
     
+        <h2>Favorites</h2>
+        <p>Favorited by <%= hunt.favoritedByUsers.length %></p>
+        <form
+         action="/hunts/<%= hunt._id %>/favorited-by/<%= user._id %>" 
+         method="POST">
+            <button type="submit">Favorite this Hunt</button>
+        </form>
+        
+
 </body>
 </html>

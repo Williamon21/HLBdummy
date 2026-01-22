@@ -26,6 +26,10 @@ router.delete("/:huntid", async (req, res) => {
         if(!foundHunt.owner._id.equals(req.session.user._id)){
          throw new Error("You do not have permission to delete this hunt")
         }
+
+        await foundHunt.deleteOne();
+        res.redirect("/hunts");
+
     } catch (error) {
         console.log(error)
         req.session.message = error.message
@@ -34,6 +38,26 @@ router.delete("/:huntid", async (req, res) => {
         })
     }
 })
+
+//UPDATE PUT /hunts/:huntid
+router.put("/:huntid", async (req, res) => {
+    try {
+
+const foundHunt =  await Hunt.findById(req.params.huntid)
+        if(!foundHunt.owner._id.equals(req.session.user._id)){
+         throw new Error("You do not have permission to update this hunt")
+    }
+        await foundHunt.updateOne(req.body)
+        res.redirect('/hunts/')
+
+    } catch (error) {
+        console.log(error);
+        req.session.message = error.message;
+        req.session.save(()=> {
+            res.redirect("/hunts");
+})
+    }
+});
 
 
 // CREATE POST /hunts
@@ -72,6 +96,22 @@ router.get("/seed", async (req, res) => {
     res.redirect('/hunts');
 });
 
+//EDIT GET /hunts/:huntid/edit
+router.get("/:huntid/edit", async (req, res) => {
+    try{
+        const foundHunt = await Hunt.findById(req.params.huntid)
+        console.log(req.params);
+        if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
+        res.render("hunts/edit.ejs", { hunt: foundHunt });
+    } catch (error) {
+        console.log(error);
+        req.session.message = error.message;
+        req.session.save(()=> {
+            res.redirect("/hunts");
+})
+    }
+})
+
 //Show GET /hunts/:huntid
 router.get("/:huntid", async (req, res) => {
     try{
@@ -88,6 +128,22 @@ router.get("/:huntid", async (req, res) => {
     });
     }
 });
+
+router.post("/:huntid/favorited-by/:userId", async (req, res) => {
+    try {
+        await Hunt.findByIdAndUpdate(
+            req.params.huntid,
+            { $push: { favoritedByUsers: req.params.userId } }
+        );
+        res.redirect(`/hunts/${req.params.huntid}`);
+    } catch (error) {
+        console.log(error);
+        req.session.message = error.message;
+        req.session.save(()=> {
+            res.redirect("/hunts");
+});
+    }
+});       
 
 module.exports = router;
 
