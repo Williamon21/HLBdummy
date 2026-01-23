@@ -14,8 +14,13 @@ router.get("/", async (req, res) => {
 
 // NEW GET /hunts/new
 
-router.get("/new", (req, res) => {
-    res.render("hunts/new.ejs");
+router.get("/new", async (req, res) => {
+    const response = await fetch('https://mhw-db.com/monsters')
+    const monsters = await response.json();
+    res.render("hunts/new.ejs", { monsters });
+    //GET back all the monsters from the mhw and send them back to the new ejs
+    //new.ejs will need a drop down displaying all the monsters
+    //when the form is submitted, the selected monster will be sent as part of the req.body
 })
 
 //Delete DELETE /hunts/:huntid
@@ -62,6 +67,7 @@ const foundHunt =  await Hunt.findById(req.params.huntid)
 
 // CREATE POST /hunts
 router.post("/", async (req, res) => {
+    console.log(req.body)
     try {
         const { monsterName, weaponType, rank, outcome, minutes, notes } = req.body
         if(!monsterName.trim()) throw new Error('Monster Name is required')
@@ -100,6 +106,7 @@ router.get("/seed", async (req, res) => {
 router.get("/:huntid/edit", async (req, res) => {
     try{
         const foundHunt = await Hunt.findById(req.params.huntid)
+        
         console.log(req.params);
         if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
         res.render("hunts/edit.ejs", { hunt: foundHunt });
@@ -116,13 +123,16 @@ router.get("/:huntid/edit", async (req, res) => {
 router.get("/:huntid", async (req, res) => {
     try{
         const foundHunt = await Hunt.findById(req.params.huntid).populate('owner');
+        const mhwid = foundHunt.mhwid;
+        const response = await fetch('https://mhw-db.com/monsters/' + mhwid)
+        const monsters = await response.json();
 
         const userHasLikedItem = foundHunt.favoritedByUsers.some(user => {
            return user._id.equals(req.session.user._id);
         })
-        console.log(req.params);
+        console.log(monsters);
         if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
-        res.render("hunts/show.ejs", { hunt: foundHunt, userHasLikedItem });
+        res.render("hunts/show.ejs", { monster: monsters, hunt: foundHunt, userHasLikedItem });
     } catch (error) {
         console.log(error);
         req.session.message = error.message;

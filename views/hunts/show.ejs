@@ -18,6 +18,12 @@
         <p>Notes: <%= hunt.notes %></p>
         <p>Hunted by: <%= hunt.owner.username %></p>
 
+
+        <h2>Description from MHW DB</h2>
+        <p>Monster Name: <%= monster.name %></p>
+        <p>Monster Description: <%= monster.description %></p>
+        
+
         <h2>Hunter</h2>
         <% if(hunt.owner._id.equals(user._id)) { %>
             <p><%= hunt.owner.username %></p>

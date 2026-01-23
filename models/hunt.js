@@ -6,6 +6,12 @@ const huntSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+
+mhwid : {
+      type: String,
+      required: true,
+    },
+
     weaponType: {
       type: String,
       required: true,
