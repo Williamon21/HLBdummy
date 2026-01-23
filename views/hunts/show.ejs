@@ -31,12 +31,21 @@
     
         <h2>Favorites</h2>
         <p>Favorited by <%= hunt.favoritedByUsers.length %></p>
+        <% if(userHasLikedItem) { %>
+            <p>You have favorited this hunt.</p>
+            <form
+         action="/hunts/<%= hunt._id %>/favorited-by/<%= user._id %>?_method=DELETE"
+         method="POST">
+            <button type="submit">Unfavorite this Hunt</button>
+        </form>
+        
+        <% } else { %>
         <form
          action="/hunts/<%= hunt._id %>/favorited-by/<%= user._id %>" 
          method="POST">
             <button type="submit">Favorite this Hunt</button>
         </form>
-        
+        <% } %>
 
 </body>
 </html>

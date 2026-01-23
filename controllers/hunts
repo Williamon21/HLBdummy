@@ -116,9 +116,13 @@ router.get("/:huntid/edit", async (req, res) => {
 router.get("/:huntid", async (req, res) => {
     try{
         const foundHunt = await Hunt.findById(req.params.huntid).populate('owner');
+
+        const userHasLikedItem = foundHunt.favoritedByUsers.some(user => {
+           return user._id.equals(req.session.user._id);
+        })
         console.log(req.params);
         if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
-        res.render("hunts/show.ejs", { hunt: foundHunt });
+        res.render("hunts/show.ejs", { hunt: foundHunt, userHasLikedItem });
     } catch (error) {
         console.log(error);
         req.session.message = error.message;
@@ -144,6 +148,22 @@ router.post("/:huntid/favorited-by/:userId", async (req, res) => {
 });
     }
 });       
+
+router.delete("/:huntid/favorited-by/:userId", async (req, res) => {
+    try {
+        await Hunt.findByIdAndUpdate(
+            req.params.huntid,
+            { $pull: { favoritedByUsers: req.params.userId } }
+        );
+        res.redirect(`/hunts/${req.params.huntid}`);
+    } catch (error) {
+        console.log(error);
+        req.session.message = error.message;
+        req.session.save(()=> {
+            res.redirect("/hunts");
+});
+    }
+});  
 
 module.exports = router;
 

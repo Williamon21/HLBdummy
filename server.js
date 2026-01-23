@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const methodOverride = require("method-override");
 const authRoutes = require("./controllers/auth");
 const huntsController = require("./controllers/hunts")
-//const userController = require('./controllers/user')
+const userController = require('./controllers/user')
 const session = require("express-session");
 const MongoStore = require('connect-mongo')
 const isSignedIn = require('./middleware/is-signed-in')
@@ -44,7 +44,7 @@ app.use("/auth", authRoutes);
 app.use(isSignedIn);
 
 app.use('/hunts', huntsController);
-//app.use('/users', userController);
+app.use('/users', userController);
 
 app.listen(PORT, () => {
   console.log("This ship sailing on port", PORT);
