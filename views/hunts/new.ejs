@@ -12,7 +12,7 @@
     <% } %>
     <form action="/hunts" method="POST">
         <label for="monsterName">Monster Name:</label>
-        <input type="text" id="monsterName" name="monsterName" required>
+        
 
         <select id="monsterName" name="mhwid">
             <% monsters.forEach(monster => { %>
@@ -21,7 +21,12 @@
         </select>
         
         <label for="weaponType">Weapon Type:</label>
-        <input type="text" id="weaponType" name="weaponType" required>
+
+            <select id="weaponType" name="mhwtype">
+            <% weapons.forEach(weapon => { %>
+                <option value="<%= weapon %>"><%= weapon %></option>
+            <% }) %>
+        </select>
 
         <label for="rank">Rank:</label>
         <input type="number" id="rank" name="rank" min="1" value="0"required>

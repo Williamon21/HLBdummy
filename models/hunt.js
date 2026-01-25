@@ -12,7 +12,8 @@ mhwid : {
       required: true,
     },
 
-    weaponType: {
+
+    mhwtype : {
       type: String,
       required: true,
     },
