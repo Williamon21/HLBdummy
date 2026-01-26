@@ -1,34 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Profile</title>
-  </head>
-  <body>
+<body>
     <%- include('../partials/_navbar.ejs') %>
+    div class="profile-container">
     <h1>Profile</h1>
-
-    <h2>My Hunts</h2>
     <p>You own <%= myHunts.length %> <%= myHunts.length === 1 ? "hunt" : "hunts" %>.</p>
-
-    <ul>
+    <div class = "profile-card-container"
         <% myHunts.forEach(hunt => { %>
-            <li>
-                <a href="/hunts/<%= hunt._id %>"><%= hunt.monsterName %> - <%= hunt.outcome %></a>
-            </li>
+                <a href="/hunts/<%= hunt._id %>"> <h4><%= hunt.monsterName %> - <%= hunt.outcome %></h4>
+                </a>
         <% }) %>
-    </ul>
+    </div>
 
-    <h2>My Favorited Hunts</h2>
+    <div class="profile-favorites-container">
     <p>You have favorited <%= myFavoritedHunts.length %> <%= myFavoritedHunts.length === 1 ? "hunt" : "hunts" %>.</p>
-    <ul>
+    <div class>= "profile-card-container"
         <% myHunts.forEach(hunt => { %>
             <li>
                 <a href="/hunts/<%= hunt._id %>"><%= hunt.monsterName %> - <%= hunt.outcome %></a>
             </li>
         <% }) %>
-    </ul>
+    </div>
+    </div>
+    </div>
   </body>
-  
-</html>

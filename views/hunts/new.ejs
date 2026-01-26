@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 <body>
-    <%- include('../partials/_navbar.ejs') %>
-    <% if(message) { %>
-        <p><strong><%= message %></strong></p>
-    <% } %>
+  <%- include('../partials/_navbar.ejs') %>
+  <div class="new-container">
+    <div class="new-form-container">
+      <h1>Create a New Hunt</h1>
     <form action="/hunts" method="POST">
         <label for="monsterName">Monster Name:</label>
         
@@ -42,5 +35,6 @@
 
         <button type="submit">Create Hunt</button>
     </form>
+  </div>
+  </div>
 </body>
-</html>

@@ -22,6 +22,38 @@
         <h2>Description from MHW DB</h2>
         <p>Monster Name: <%= monster.name %></p>
         <p>Monster Description: <%= monster.description %></p>
+
+        <h2>Elemental Weaknesses</h2>
+
+<% if (monster && monster.weaknesses && monster.weaknesses.length) { %>
+  <ul>
+    <% monster.weaknesses.forEach(w => { %>
+      <li>
+        <strong><%= w.element %>:</strong>
+        <%= w.stars %>★
+        <% if (w.condition) { %> ( <%= w.condition %> ) <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No weaknesses found for this monster.</p>
+<% } %>
+
+<h2>Resistances</h2>
+
+<% if (monster && monster.resistances && monster.resistances.length) { %>
+  <ul>
+    <% monster.resistances.forEach(r => { %>
+      <li>
+        <strong><%= r.element %>:</strong>
+        <%= r.condition ? r.condition : 'Resistant' %>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>No resistances found for this monster.</p>
+<% } %>
+
         
 
         <h2>Hunter</h2>
