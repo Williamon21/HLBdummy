@@ -30,7 +30,6 @@ router.get("/new", async (req, res) => {
 //Delete DELETE /hunts/:huntid
 router.delete("/:huntid", async (req, res) => {
     try {
-        //await Hunt.findByIdAndDelete(req.params.huntid)
         const foundHunt =  await Hunt.findById(req.params.huntid)
         if(!foundHunt.owner._id.equals(req.session.user._id)){
          throw new Error("You do not have permission to delete this hunt")
@@ -81,8 +80,6 @@ router.post("/", async (req, res) => {
     console.log(req.body)
     try {
         const { rank, outcome, minutes, notes } = req.body
-       // if(!monsterName.trim()) throw new Error('Monster Name is required')
-        //if(!weaponType()) throw new Error('Weapon Type is required')
         if(rank < 0 || rank === '') throw new Error('Rank must be a positive number')
         if(outcome < 0 || outcome === '') throw new Error('Outcome must be a positive number')
         if(minutes < 0 || minutes === '') throw new Error('Minutes must be a positive number')
@@ -112,7 +109,6 @@ router.post("/", async (req, res) => {
 //seed route
 router.get("/seed", async (req, res) => {
     await Hunt.deleteMany({});
-   // await Hunt.create([
        
     res.redirect('/hunts');
 });
@@ -126,8 +122,6 @@ router.get("/:huntid/edit", async (req, res) => {
     const weaponResponse = await fetch('https://mhw-db.com/weapons')
     const weapons = await weaponResponse.json();
     const uniqueWeaponTypes = [...new Set(weapons.map(weapon => weapon.type))];
-       // console.log(uniqueWeaponTypes);
-   // res.render("hunts/new.ejs", { monsters, weapons: uniqueWeaponTypes });
         console.log(foundHunt);
         if(!foundHunt) throw new Error(`Failed to find hunt with id ${req.params.huntid}`);
         res.render("hunts/edit.ejs", { monsters, weapons: uniqueWeaponTypes, hunt: foundHunt });
@@ -151,11 +145,7 @@ router.get("/:huntid", async (req, res) => {
         const mhwtype = foundHunt.weaponType;
         const monsterResponse = await fetch('https://mhw-db.com/monsters/' + mhwid)
         console.log(monsterResponse);
-        //const weaponResponse = await fetch('https://mhw-db.com/weapons/' + mhwtype)
         const monsters = await monsterResponse.json();
-      //  const weapons = await weaponResponse.json();
-       // const uniqueWeaponTypes = [...new Set(allWeapons.map(weapon => weapon.type))];
-        //console.log(uniqueWeaponTypes);
         const userHasLikedItem = foundHunt.favoritedByUsers.some(user => {
            return user._id.equals(req.session.user._id);
         })
