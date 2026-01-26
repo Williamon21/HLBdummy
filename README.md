@@ -2,7 +2,7 @@ Project link: https://github.com/Williamon21/HLBdummy
 
 # Hunter's LogBook
 
-![App Screenshot] (LogbookHome.png)
+![Logbook Home](LogbookHome.png)
 
 This project allows the user to create a hunt they may have completed after completing a Monster Hunter Hunt. This allows them to edit, delete, and add new hunts. Not only that but the Monster's information such as their descriptions are added with each hunt. This data is pulled from the MHW API.
 
@@ -25,6 +25,7 @@ In recent years, I have been playing a lot of Monster Hunter, and thought that m
 -MDN (https://developer.mozilla.org/en-US/)
 -EJS (https://ejs.co)
 -Past Labs
+-https://docs.mhw-db.com (API used)
 
 
 ## What will you update in the future?
